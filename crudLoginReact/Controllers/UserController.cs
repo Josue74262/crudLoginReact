@@ -1,4 +1,5 @@
 ﻿using crudLoginReact.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,14 +8,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace crudLoginReact.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class UserController : ControllerBase
     {
         private readonly UserContext userContext;
-
+        
         public UserController(UserContext userContext)
         {
             this.userContext = userContext;
@@ -35,6 +38,7 @@ namespace crudLoginReact.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("GetUsuario")]
         public ActionResult<Usuario> GetUsuario(int id)
         {
@@ -57,6 +61,7 @@ namespace crudLoginReact.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("AddUsuario")]
         public ActionResult<string> AddUsuario(Usuario usuario)
         {
@@ -64,7 +69,7 @@ namespace crudLoginReact.Controllers
             {
                 userContext.Usuario.Add(usuario);
                 userContext.SaveChanges();
-                return Ok("Usuario agregado");
+                return StatusCode(StatusCodes.Status200OK, "Usuario creado");
             }
             catch (Exception ex)
             {
@@ -73,6 +78,7 @@ namespace crudLoginReact.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [Route("UpdateUsuario")]
         public ActionResult<string> UpdateUsuario(Usuario usuario)
         {
@@ -80,7 +86,7 @@ namespace crudLoginReact.Controllers
             {
                 userContext.Entry(usuario).State = EntityState.Modified;
                 userContext.SaveChanges();
-                return Ok("Usuario modificado");
+                return StatusCode(StatusCodes.Status200OK, "Usuario actualizado");
             }
             catch (Exception ex)
             {
@@ -89,6 +95,7 @@ namespace crudLoginReact.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         [Route("DeleteUser")]
         public ActionResult<string> DeleteUsuario(int id)
         {
